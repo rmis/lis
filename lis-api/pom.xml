@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.rmisapp.lsd.integration.md.lis</groupId>
+        <artifactId>lis</artifactId>
+        <version>2.0.12-SNAPSHOT</version>
+    </parent>
+
+
+    <artifactId>lis-api</artifactId>
+    <packaging>jar</packaging>
+    <name>lis.api</name>
+
+    <organization>
+        <name>RT Labs</name>
+        <url>http://rtlabs.ru</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Alexander Kuznetsov</name>
+            <email>alexander.kuznetsov@rtlabs.ru</email>
+            <roles>
+                <role>Team Lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.rmisapp.medical-case</groupId>
+            <artifactId>medical-case-api</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>

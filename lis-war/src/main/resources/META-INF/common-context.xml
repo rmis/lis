@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:cxf="http://cxf.apache.org/core" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd   http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+
+
+    <bean primary="true" name="auditVariablesInitializer" class="cz.atria.common.base.dao.audit.AuditVariablesInitializer" autowire-candidate="true">
+        <constructor-arg name="source" value="INT_LSD"/>
+        <constructor-arg name="userHolder" ref="userHolder"/>
+    </bean>
+    <!--<import resource="classpath:cz/atria/common/base/dao/base-dao-jpa-audit-app-context.xml"/>-->
+
+
+</beans>

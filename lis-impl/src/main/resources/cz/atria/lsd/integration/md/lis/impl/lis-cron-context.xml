@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <bean id="lisService" class="cz.atria.lsd.integration.md.lis.impl.LisServiceImpl"/>
+    <task:scheduler id="lisScheduler" pool-size="10"/>
+
+    <context:property-placeholder location="classpath:lis.properties"
+                                  ignore-unresolvable="true"/>
+    <task:scheduled-tasks scheduler="lisScheduler">
+        <task:scheduled ref="lisService" method="sendReferrals" cron="${lis.send.referral.cron}"/>
+        <task:scheduled ref="lisService" method="updateReferrals" cron="${lis.attach.files.cron}"/>
+    </task:scheduled-tasks>
+
+</beans>

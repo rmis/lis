@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="201212121528_i_lis_referral_1.0" author="tnurdinov" dbms="postgresql">
+        <sql>
+            CREATE TABLE i_lis_referral (
+            	id                   int4 NOT NULL,
+            	referral_id          int4 NOT NULL,
+            	sample_id            int4 NOT NULL,
+                is_attached          boolean DEFAULT false,
+            	CONSTRAINT i_lis_referral_pk PRIMARY KEY ( id)
+             );
+            create SEQUENCE i_lis_referral_seq start with 1;
+        </sql>
+    </changeSet>
+
+
+
+    <changeSet id="201212121528_i_lis_referral_2.0" author="tnurdinov" dbms="postgresql">
+          <sql>
+              alter table i_lis_referral alter column sample_id drop not null;
+          </sql>
+      </changeSet>
+
+</databaseChangeLog>
