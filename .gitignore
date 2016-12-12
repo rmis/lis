@@ -1,2 +1,5 @@
 .idea
 /*.iml
+/lis-api/*.iml
+/lis-impl/*.iml
+/lis-war/*.iml
