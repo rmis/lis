@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="201212121524_create_sequence_sample_tab_key_seq_v3" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="sample_tab_key_seq" schemaName="public" />
+            </not>
+        </preConditions>
+        <sql>
+            CREATE SEQUENCE public.sample_tab_key_seq INCREMENT 1 MINVALUE 1 START 1;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201212121524_create_table_sample_v3" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sample" schemaName="public" />
+            </not>
+            <sequenceExists sequenceName="sample_tab_key_seq" schemaName="public" />
+        </preConditions>
+        <sql>
+            CREATE TABLE sample (
+            tab_key int4 DEFAULT nextval('sample_tab_key_seq') NOT NULL,
+            refid int4 NOT NULL,
+            lab_ogrn int4,
+            pid varchar(20) NOT NULL,
+            card_num varchar(20),
+            fam varchar(25),
+            name varchar(20),
+            otch varchar(40),
+            birthday date,
+            sex int4,
+            cycle varchar(1),
+            pregn int4,
+            hiv_cont varchar(6),
+            cat_id varchar(5),
+            category varchar(60),
+            blood int4,
+            drugs varchar(50),
+            dep_id int4,
+            dep_ogrn int4,
+            depart varchar(60),
+            room varchar(10),
+            doc_id varchar(20),
+            doc_name varchar(50),
+            diagn varchar(7),
+            ser_ins varchar(20),
+            num_ins varchar(20),
+            k_ins varchar(6),
+            insurer varchar(60),
+            ser_p varchar(10),
+            num_p varchar(20),
+            address varchar,
+            sampdate date,
+            cito bool,
+            flag bool,
+            wdate timestamp(6),
+            rdate timestamp(6),
+            error varchar,
+            lab_id int4,
+            CONSTRAINT sample_pkey PRIMARY KEY (tab_key)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="201212121524_create_index_sample_refid_uindex" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="sample" schemaName="public" indexName="sample_refid_uindex" />
+            </not>
+        </preConditions>
+        <createIndex tableName="sample" indexName="sample_refid_uindex" unique="true" schemaName="public">
+            <column name="refid" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="201212121524_create_index_sample_tab_key_uindex" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="sample" schemaName="public" indexName="sample_tab_key_uindex" />
+            </not>
+        </preConditions>
+        <createIndex tableName="sample" indexName="sample_tab_key_uindex" unique="true" schemaName="public">
+            <column name="tab_key" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="201212121524_create_table_orders_v3" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="orders" schemaName="public" />
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE orders (
+            tab_key int4 NOT NULL,
+            stype int4,
+            targ_id varchar(4),
+            target varchar(50),
+            orderid varchar(10) NOT NULL,
+            flag bool,
+            sample_id int4,
+            CONSTRAINT tab_key_to_sample_fk FOREIGN KEY (tab_key) REFERENCES public.sample (tab_key) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT order_to_sample_fk FOREIGN KEY (sample_id) REFERENCES public.sample (tab_key) ON DELETE NO ACTION ON UPDATE NO ACTION
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="201212121524_create_table_result_v3" author="alexander.kuznetsov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="result" schemaName="public" />
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE result(
+            tab_key int4 NOT NULL,
+            refid int4 NOT NULL,
+            sid int4 NOT NULL,
+            pid varchar,
+            card_num varchar,
+            tstg_id int4 NOT NULL,
+            tstg_name varchar(30),
+            tst_id int4 NOT NULL,
+            tst_mn varchar(17),
+            tst_name varchar(80),
+            res varchar(15),
+            rem varchar(40),
+            unit varchar(40),
+            l_ref varchar(40),
+            h_ref varchar(40),
+            tst_note varchar,
+            tst_date timestamp(6) NOT NULL,
+            path varchar,
+            flag bool NOT NULL,
+            wdate timestamp(6) NOT NULL,
+            rdate timestamp(6) NOT NULL,
+            error varchar,
+            CONSTRAINT tab_key_to_sample_fk FOREIGN KEY (tab_key) REFERENCES public.sample (tab_key) ON DELETE NO ACTION ON UPDATE NO ACTION
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
