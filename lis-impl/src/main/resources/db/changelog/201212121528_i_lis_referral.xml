@@ -6,6 +6,11 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="201212121528_i_lis_referral_1.0" author="tnurdinov" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="i_lis_referral" schemaName="public" />
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE i_lis_referral (
             	id                   int4 NOT NULL,
@@ -18,12 +23,14 @@
         </sql>
     </changeSet>
 
-
-
     <changeSet id="201212121528_i_lis_referral_2.0" author="tnurdinov" dbms="postgresql">
-          <sql>
-              alter table i_lis_referral alter column sample_id drop not null;
-          </sql>
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="i_lis_referral" schemaName="public" />
+            <columnExists columnName="sample_id" tableName="i_lis_referral" schemaName="public" />
+        </preConditions>
+        <sql>
+            alter table i_lis_referral alter column sample_id drop not null;
+        </sql>
       </changeSet>
 
 </databaseChangeLog>
