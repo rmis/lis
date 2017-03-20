@@ -43,8 +43,8 @@ public class IntegrationLisReferralServiceImpl implements IntegrationLisReferral
 	{
 
 		return entityManager.createQuery(
-				"select ref from Referral ref where ref.type.id = 7 " +
-						"and not exists(select iref from IntegrationLisReferral iref where iref.referralId = ref.id)")
+				"select ref from Referral ref where ref.type.id = 6 " +
+						"and not exists(select iref from IntegrationLisReferral iref where iref.referralId = ref.id) and ref.id not in (738879, 738880, 738881, 738882, 781463)")
 				.setMaxResults(1000).getResultList();
 	}
 
@@ -52,8 +52,8 @@ public class IntegrationLisReferralServiceImpl implements IntegrationLisReferral
 	public List<Referral> getNotSentReferrals()
 	{
 		return entityManager.createQuery(
-						"select ref from Referral ref where ref.type.id = 7 " +
-								"and exists(select iref from IntegrationLisReferral iref where iref.referralId = ref.id and iref.sampleId is null)")
+						"select ref from Referral ref where ref.type.id = 6 " +
+								"and exists(select iref from IntegrationLisReferral iref where iref.referralId = ref.id and iref.sampleId is null) and ref.id not in (738879, 738880, 738881, 738882, 781463)")
 						.setMaxResults(1000).getResultList();
 	}
 

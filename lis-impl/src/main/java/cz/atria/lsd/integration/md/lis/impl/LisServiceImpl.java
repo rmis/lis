@@ -14,15 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * User: tnurtdinov
- * Date: 04.12.12
- * Time: 18:04
- */
+
 public class LisServiceImpl implements LisService
 {
 	@Autowired
@@ -44,8 +39,6 @@ public class LisServiceImpl implements LisService
 	private static final String INSERT_ORDER = "insert into orders ( tab_key, sample_id, orderid) values (nextval('orders_seq'), ?, ?)";
 	private static final String SELECT_RESULT_PATH = "select path from result where refid = ?";
 	private static final String SELECT_ID_FROM_SAMPLE_BY_REFID = "select tab_key from sample where refid = ?";
-
-
 	private final org.slf4j.Logger log = LoggerFactory.getLogger(LisServiceImpl.class.getName());
 
 	@Override
@@ -71,6 +64,7 @@ public class LisServiceImpl implements LisService
 			try
 			{
 				String path = selectResultPath(integrationLisReferral.getReferralId());
+				//String path = "/home/iadmin/file.pdf";
 				if (path != null)
 				{
 					Integer appendixId = saveReferralAppendix(path, integrationLisReferral.getReferralId());
@@ -115,11 +109,12 @@ public class LisServiceImpl implements LisService
 		{
 			try
 			{
+				log.error("sendNotSentReferral");
 				sendNotSentReferral(referral);
 			}
 			catch (Exception e)
 			{
-				log.error("referral with id = " + referral.getId() + " could not send", e);
+				log.error("second stage of sending... referral with id = " + referral.getId() + " could not send", e);
 			}
 		}
 	}
@@ -164,7 +159,7 @@ public class LisServiceImpl implements LisService
 		else
 		{
 			log.info("referral with id = " + referral.getId() + " was sent, updating integration table...");
-			IntegrationLisReferral integrationLisReferral = integrationLisReferralService
+		  IntegrationLisReferral integrationLisReferral = integrationLisReferralService
 					.getIntegrationLisReferral(referral.getId());
 			integrationLisReferral.setSampleId(sampleId);
 			integrationLisReferralService.saveIntegrationLisReferral(integrationLisReferral);
@@ -265,7 +260,7 @@ public class LisServiceImpl implements LisService
 				//sample_id
 				sampleId,
 				//order_id
-				service.getId()
+				service.getCode()
 		});
 	}
 
@@ -273,6 +268,7 @@ public class LisServiceImpl implements LisService
 	{
 		List<String> result = jdbcTemplate.queryForList(SELECT_RESULT_PATH, new Object[]{referralId}, String.class);
 		return (result.isEmpty()) ? null : result.get(0);
+
 	}
 
 	private Integer selectSampleId(Integer referralId)
@@ -290,16 +286,20 @@ public class LisServiceImpl implements LisService
 			{
 				return true;
 			}
-
 		}
-
 		return false;
 	}
 
-
 	public Integer saveReferralAppendix(String path, Integer referralId)
 	{
+		/*FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("file.pdf");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}*/
 		InputStream io = lisReferralAppendixStorage.getContent(path);
+		//InputStream io = fis;
 		ReferralAppendix referralAppendix = new ReferralAppendix();
 		referralAppendix.setAppendixName(getFileName(path));
         referralAppendix.setFileName(referralAppendix.getAppendixName());
@@ -313,13 +313,13 @@ public class LisServiceImpl implements LisService
 		int i = path.lastIndexOf('/');
 		if (i == -1)
 			return path;
+
 		else
 		{
 			if (!(i + 1 > path.length()))
 				return path.substring(i + 1);
 		}
-
 		return null;
+		//return "file.pdf";
 	}
-
 }

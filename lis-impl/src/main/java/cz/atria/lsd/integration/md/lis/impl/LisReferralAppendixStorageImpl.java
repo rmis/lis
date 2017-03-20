@@ -106,5 +106,4 @@ public class LisReferralAppendixStorageImpl implements LisReferralAppendixStorag
 			return null;
 		}
 	}
-
 }
