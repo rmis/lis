@@ -105,6 +105,7 @@
             orderid varchar(10) NOT NULL,
             flag bool,
             sample_id int4,
+            cito BOOLEAN,
             CONSTRAINT tab_key_to_sample_fk FOREIGN KEY (tab_key) REFERENCES public.sample (tab_key) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT order_to_sample_fk FOREIGN KEY (sample_id) REFERENCES public.sample (tab_key) ON DELETE NO ACTION ON UPDATE NO ACTION
             );

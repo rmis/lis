@@ -36,7 +36,7 @@ public class LisServiceImpl implements LisService
 	private static final String INSERT_SAMPLE = "insert into sample(tab_key, refid, lab_id, pid, card_num, fam, name, otch, birthday, sex, doc_id, doc_name, diagn) " +
 			"values (nextval('sample_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String SELECT_REFERRAL_IDS = "select refid from sample";
-	private static final String INSERT_ORDER = "insert into orders ( tab_key, sample_id, orderid) values (nextval('orders_seq'), ?, ?)";
+	private static final String INSERT_ORDER = "insert into orders ( tab_key, sample_id, orderid, cito) values (nextval('orders_seq'), ?, ?, ?)";
 	private static final String SELECT_RESULT_PATH = "select path from result where refid = ?";
 	private static final String SELECT_ID_FROM_SAMPLE_BY_REFID = "select tab_key from sample where refid = ?";
 	private final org.slf4j.Logger log = LoggerFactory.getLogger(LisServiceImpl.class.getName());
@@ -137,7 +137,7 @@ public class LisServiceImpl implements LisService
 				{
 					try
 					{
-						insertOrder(sampleId, referralToService.getService());
+						insertOrder(sampleId, referralToService.getService(), referral);
 					}
 					catch (Exception e)
 					{
@@ -254,13 +254,15 @@ public class LisServiceImpl implements LisService
 		});
 	}
 
-	private void insertOrder(Integer sampleId, Service service)
+	private void insertOrder(Integer sampleId, Service service, Referral referral)
 	{
 		jdbcTemplate.updateReturningKeyInteger(INSERT_ORDER, "tab_key", new Object[]{
 				//sample_id
 				sampleId,
 				//order_id
-				service.getCode()
+				service.getCode(),
+				//cito - признак срочности
+				referral.getUrgent()
 		});
 	}
 
