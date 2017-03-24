@@ -4,11 +4,7 @@ import cz.atria.md.referral.Referral;
 
 import java.util.Date;
 
-/**
- * User: tnurtdinov
- * Date: 05.12.12
- * Time: 15:01
- */
+
 
 public class ReferralModel
 {
@@ -187,4 +183,5 @@ public class ReferralModel
 	{
 		this.diagn = diagn;
 	}
+
 }
