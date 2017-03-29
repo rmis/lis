@@ -303,6 +303,7 @@ public class LisServiceImpl implements LisService
 		//InputStream io = fis;
 		ReferralAppendix referralAppendix = new ReferralAppendix();
 		referralAppendix.setAppendixName(getFileName(path));
+		//referralAppendix.setAppendixName(lisReferralAppendixStorage.parseFileName(path));
         referralAppendix.setFileName(referralAppendix.getAppendixName());
 		referralAppendix.setReferral(new Referral(referralId));
 		referralAppendixService.addReferralAppendix(referralAppendix, io);
@@ -314,7 +315,6 @@ public class LisServiceImpl implements LisService
 		int i = path.lastIndexOf('/');
 		if (i == -1)
 			return path;
-
 		else
 		{
 			if (!(i + 1 > path.length()))

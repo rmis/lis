@@ -2,13 +2,17 @@ package cz.atria.lsd.integration.md.lis.impl;
 
 import cz.atria.lsd.integration.md.lis.api.LisReferralAppendixStorage;
 import cz.atria.md.referral.TooLargeReferralAppendixException;
-import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * User: tnurtdinov
@@ -19,7 +23,7 @@ import java.io.InputStream;
 public class LisReferralAppendixStorageImpl implements LisReferralAppendixStorage
 {
     private static Logger logger = LoggerFactory.getLogger(LisReferralAppendixStorageImpl.class);
-	private FTPClient client;
+	private FTPSClient client;
 
 	private  String host;
 
@@ -46,17 +50,28 @@ public class LisReferralAppendixStorageImpl implements LisReferralAppendixStorag
 
 	public void init()
 	{
-		if (client == null)
-			client = new FTPClient();
 		try
 		{
-			client.connect(host);
-			client.login(user, password);
-		}
+			   if (client == null)
+			   {
+				   client = new FTPSClient("TLS", false);
+				   FTPClientConfig ftpClientConfig = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
+				   ftpClientConfig.setServerLanguageCode("ru");
+				   client.configure(ftpClientConfig);
+				   client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+				   client.connect(host, 21);
+				   client.login(user, password);
+				   client.enterLocalPassiveMode();
+				   client.execPBSZ(0);
+				   client.execPROT("P");
+			   }
+        }
 		catch (IOException e)
 		{
             logger.error("LisReferralAppendixStorage login failed", e);
 			throw new RuntimeException(e);
+		} catch (NoSuchAlgorithmException e) {
+			logger.error("NoSuchAlgorithmException", e);
 		}
 	}
 
@@ -76,13 +91,13 @@ public class LisReferralAppendixStorageImpl implements LisReferralAppendixStorag
 
 	private  String parsePath(String ftpPath)
 	{
-		//ftp://user:password@prime.kirkazan.ru/in/tnurdinov/mcl.xml"
 		String [] url   = ftpPath.split(host);
 		if(url.length>1)
 			return url[1];
 		else
 			return url[0];
 	}
+
 	@Override
 	public InputStream getContent(String path)
 	{
